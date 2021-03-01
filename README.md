@@ -1,2 +1,2 @@
-# edu-center-wx
+# edu-center
 艺术教育培训
