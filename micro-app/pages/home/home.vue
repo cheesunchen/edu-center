@@ -2,6 +2,7 @@
 	<view class="container">
 		<!-- 计算手机状态栏的高度 -->
 		<!-- #ifndef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-ALIPAY -->
+		<!-- #endif -->
 		<!-- 头部 -->
 		<view class="header">		
 			<!-- 搜索框 -->
@@ -26,25 +27,40 @@
 				</swiper>
 			</view>
 			<!-- 图标 -->
-						<view class="icons">
+			<view class="icons">
+
+				<view class="icons-list" @click="postSearchCourse('course')">
+					<image src="@/static/daoshi.png" mode="aspectFit"></image>
+					<text>课程</text>
+				</view>
+				<view class="icons-list" @click="postSearchCourse('instrument')">
+					<image src="@/static/hot.png" mode="aspectFit"></image>
+					<text>器材</text>
+				</view>
+				<view class="icons-list" @click="navigate('sign-in')">
+					<image src="@/static/qiandao.png" mode="aspectFit"></image>
+					<text>签到</text>
+				</view>
+				<view class="icons-list" @click="navigate('sign-in')">
+					<image src="@/static/qiandao.png" mode="aspectFit"></image>
+					<text>充值</text>
+				</view>
+			</view>
 			
-							<view class="icons-list" @click="postSearchCourse('course')">
-								<image src="@/static/daoshi.png" mode="aspectFit"></image>
-								<text>课程</text>
-							</view>
-							<view class="icons-list" @click="postSearchCourse('instrument')">
-								<image src="@/static/hot.png" mode="aspectFit"></image>
-								<text>器材</text>
-							</view>
-							<view class="icons-list" @click="navigate('sign-in')">
-								<image src="@/static/qiandao.png" mode="aspectFit"></image>
-								<text>签到</text>
-							</view>
-							<view class="icons-list" @click="navigate('sign-in')">
-								<image src="@/static/qiandao.png" mode="aspectFit"></image>
-								<text>充值</text>
-							</view>
-						</view>
+			<!-- 课程专场 -->
+			<view class="course">
+				<view class="course-top">
+					<image src="@/static/icon/kczc.png" mode="aspectFit"></image>
+					<text class="btn" @click="navigate('course-list','indextj')">查看更多></text>
+				</view>
+				<view class="course-bottom">
+					<view class="course-bottom-list" v-for="(item, index) in index_courseTJ" :key="index" @click="goCourseDetails(item.id)">
+						<image :src="HOST_URL + item.thumb" mode="aspectFit"></image>
+						<text>{{item.menuname}}</text>
+						<text>共{{item.ksnum}}课时<text>|</text>{{item.viewnum}}人已学</text>
+					</view>
+				</view>
+			</view>
 		</view>
 	</view>
 </template>
@@ -59,7 +75,12 @@
 				navBarFixed: false,
 				huifu: false,
 				images: [],
-				HOST_URL: uni.HOST_URL
+				HOST_URL: uni.HOST_URL,
+				
+				index_courseTJ:[],//主页课程推荐
+				courseTJ: [], // 分类课程推荐列表
+				dujiaList: [], // 独家精选列表
+				flid: '' ,// 这个变量用于传值
 			}
 		},
 		onShow() {
@@ -94,17 +115,14 @@
 		},
 		methods: {
 			swiper_change(e){
-				console.log('')
 				this.swiper_bgcolor=this.images[e.detail.current].maincolor
 			},
 			// 获取轮播图和列表信息
 			getIndexInfo() {
 				getIndexInfo().then(res => {
-					console.log('res')
 					this.images = res.data.data.ads
 					this.fls = res.data.data.classify
 					this.index_courseTJ=res.data.data.courses
-					console.log(this.images)
 				})
 			},
 
@@ -150,6 +168,7 @@
 
 <style lang="less">
 @import url('./home.less');
+@import url('./goods-course.less');
 @keyframes rotation {
 	from {
 		transform: rotate(0deg);
