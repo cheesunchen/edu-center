@@ -1,0 +1,13 @@
+/.DS_Store
+/api/api.iml
+/common/common.iml
+/service/service.iml
+/pojo/pojo.iml
+/mapper/mapper.iml
+/mapper/target/
+/api/target/
+/common/target/
+/.idea/
+/edu-api.iml
+/pojo/target/
+/service/target/

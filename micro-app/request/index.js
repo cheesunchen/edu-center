@@ -6,7 +6,24 @@
  */
 import request from './request'
 
-
+// 首页banner列表
+export const getIndexBanner = () => {
+	return request({
+		url: '/system/getBannerList',
+		method: 'GET'
+	})
+}
+// 首页课程列表
+export const getIndexCourse = () => {
+	return request({
+		url: '/course/getCoursePage',
+		method: 'POST',
+		data: {
+			"pageNum": 1,
+			"pageSize": 8
+		}
+	})
+}
 // 首页
 export const getIndexInfo = () => {
 	return request({

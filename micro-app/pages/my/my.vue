@@ -19,20 +19,20 @@
 				<view class="user-balance">
 					<view class="user-balance-item" @click="openChongzhi">
 						<text>{{userinfo.money?userinfo.money:0}}</text>
-						<text>余额（元）</text>
+						<text>余额 / 元</text>
 					</view>
 					<view class="user-balance-item" @click="navigate('credits-exchange')">
 						<text>{{userinfo.credit?userinfo.credit:0}}</text>
 						<text>积分</text>
 					</view>
-					<view @click="navigate('learn-time')" class="user-balance-item" style="overflow: hidden;">
+					<!-- <view @click="navigate('learn-time')" class="user-balance-item" style="overflow: hidden;">
 						<text style="font-size: 35upx;">{{todayTotal}}</text>
 						<text>学习时长</text>
-					</view>
-					<view @click="navigate('message')" class="user-balance-item">
+					</view> -->
+					<!-- <view @click="navigate('message')" class="user-balance-item">
 						<text>0</text>
 						<text>消息</text>
-					</view>
+					</view> -->
 				</view>
 			</view>
 			
@@ -61,14 +61,14 @@
 					<image src="@/static/icon/user-jifen.png" mode="aspectFit"></image>
 					<text>积分商城</text>
 				</view>
-				<view class="user-icon-list-item" @click="navigate('wo-subscribe')">
+				<!-- <view class="user-icon-list-item" @click="navigate('wo-subscribe')">
 					<image src="@/static/icon/dingyue.png" mode="aspectFit"></image>
 					<text>我的收藏</text>
-				</view>
-				<view class="user-icon-list-item" @click="navigate('vip')">
+				</view> -->
+				<!-- <view class="user-icon-list-item" @click="navigate('vip')">
 					<image src="@/static/icon/user-vip.png" mode="aspectFit"></image>
 					<text>升级VIP</text>
-				</view>
+				</view> -->
 			</view>
 		</view>
 		
@@ -83,7 +83,7 @@
 			<view class="user-box-item" @click="navigate('recruit')">
 				<view class="user-box-item-left">
 					<image src="@/static/icon/jszm2.png" mode="aspectFit"></image>
-					<text>讲师招募</text>
+					<text>关于我们</text>
 				</view>
 				<image class="user-box-item-right" src="@/static/icon/jt.png" mode="aspectFit"></image>
 			</view>
@@ -96,7 +96,7 @@
 				<image class="user-box-item-right" src="@/static/icon/jt.png" mode="aspectFit"></image>
 			</view>
 			<!-- 退出登录按钮 -->
-			<view class="logout" @click="logout">
+			<view v-if="login" class="logout" @click="logout">
 					<text>退出登录</text>
 			</view>
 		</view>
@@ -117,7 +117,7 @@
 				czmoney:0,
 				shop_phone:'',
 				todayTotal:0,
-				
+				login: true
 			};
 		},
 		onShareAppMessage(res) {

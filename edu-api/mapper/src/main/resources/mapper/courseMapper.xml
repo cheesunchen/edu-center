@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eduapi.mapper.CourseMapper" >
+    <select id="selectCoursePage" parameterType="com.eduapi.pojo.bo.CoursePageBo" resultType="com.eduapi.pojo.vo.CourseVo">
+        select tc.id, tc.name, tc.course_amount, tc.price, tc.description, tc.status, tc.create_time, tc.cover,
+               tut.name teacher_name, tuc.name create_user
+        from course tc left join user tut on tc.teacher_id = tut.id
+        left join user tuc on tc.create_user = tuc.id
+        where tc.status != -1
+            <if test="name != null and name != ''">
+                and tc.name like '%'#{name}'%'
+            </if>
+        order by id desc
+    </select>
+</mapper>

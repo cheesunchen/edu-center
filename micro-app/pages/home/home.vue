@@ -4,7 +4,7 @@
 		<!-- #ifndef MP-WEIXIN || MP-BAIDU || MP-TOUTIAO || MP-ALIPAY -->
 		<!-- #endif -->
 		<!-- 头部 -->
-		<view class="header">		
+		<view class="header">
 			<!-- 搜索框 -->
 			<view class="header-input">
 				<image @click="postSearchCourse" class="search" src="@/static/icon/search.png" mode="aspectFit"></image>
@@ -14,14 +14,10 @@
 		<view>
 			<!-- 轮播图 -->
 			<view class="swiper">
-				<swiper :indicator-dots="true"
-				:autoplay="true"
-				:interval="2000"
-				:duration="1000"
-				circular="true" @change="swiper_change">
-					<swiper-item v-for="item in images" :key="item.id">
+				<swiper :indicator-dots="true" :autoplay="true" :interval="2000" :duration="1000" circular="true" @change="swiper_change">
+					<swiper-item v-for="item in images" :key="index">
 						<view class="swiper-item">
-							<image :src="HOST_URL + item.thumb" mode="aspectFit"></image>
+							<image :src="item" mode="aspectFit"></image>
 						</view>
 					</swiper-item>
 				</swiper>
@@ -30,23 +26,23 @@
 			<view class="icons">
 
 				<view class="icons-list" @click="postSearchCourse('course')">
-					<image src="@/static/daoshi.png" mode="aspectFit"></image>
+					<image src="@/static/icon/daoshi.png" mode="aspectFit"></image>
 					<text>课程</text>
 				</view>
 				<view class="icons-list" @click="postSearchCourse('instrument')">
-					<image src="@/static/hot.png" mode="aspectFit"></image>
+					<image src="@/static/icon/hot.png" mode="aspectFit"></image>
 					<text>器材</text>
 				</view>
 				<view class="icons-list" @click="navigate('sign-in')">
-					<image src="@/static/qiandao.png" mode="aspectFit"></image>
+					<image src="@/static/icon/qiandao.png" mode="aspectFit"></image>
 					<text>签到</text>
 				</view>
 				<view class="icons-list" @click="navigate('sign-in')">
-					<image src="@/static/qiandao.png" mode="aspectFit"></image>
+					<image src="@/static/icon/qiandao.png" mode="aspectFit"></image>
 					<text>充值</text>
 				</view>
 			</view>
-			
+
 			<!-- 课程专场 -->
 			<view class="course">
 				<view class="course-top">
@@ -55,9 +51,9 @@
 				</view>
 				<view class="course-bottom">
 					<view class="course-bottom-list" v-for="(item, index) in index_courseTJ" :key="index" @click="goCourseDetails(item.id)">
-						<image :src="HOST_URL + item.thumb" mode="aspectFit"></image>
-						<text>{{item.menuname}}</text>
-						<text>共{{item.ksnum}}课时<text>|</text>{{item.viewnum}}人已学</text>
+						<image :src="item.cover" mode="aspectFit"></image>
+						<text>{{item.name}}</text>
+						<text>共{{item.courseAmount}}课时<text>|</text>学费{{item.price}}元</text>
 					</view>
 				</view>
 			</view>
@@ -66,90 +62,77 @@
 </template>
 
 <script>
-	import {getIndexInfo, getIndexListInfo, postIndexGoods, postDhHyp} from '@/request/index'
-	import {wx_login} from '@/request/checkUserinfo'
+	import {
+		getIndexCourse,
+		getIndexBanner,
+		getIndexInfo,
+		getIndexListInfo,
+		postIndexGoods,
+		postDhHyp
+	} from '@/request/index'
+	import {
+		wx_login
+	} from '@/request/checkUserinfo'
 	export default {
 		data() {
 			return {
 				keyword: '',
 				navBarFixed: false,
-				huifu: false,
 				images: [],
 				HOST_URL: uni.HOST_URL,
-				
-				index_courseTJ:[],//主页课程推荐
-				courseTJ: [], // 分类课程推荐列表
-				dujiaList: [], // 独家精选列表
-				flid: '' ,// 这个变量用于传值
+
+				index_courseTJ: [], //主页课程推荐
+				flid: '', // 这个变量用于传值
 			}
 		},
 		onShow() {
-			console.log('onShow')
 			this.getIndexInfo()
-			// 计时关闭弹窗
-			var date = new Date()
-			var nowtime=date.getTime()
-			let base_set=uni.getStorageSync('base_set')
-			let adclosetime=uni.getStorageSync('adclosetime')
-			console.log(nowtime+'...'+adclosetime);
-			if(base_set){
-				this.base_set=base_set
-				if(base_set.is_gz==1){
-					if(adclosetime){
-						if(nowtime-adclosetime>8000){
-							this.ad_close=true
-						}else{
-							this.ad_close=false
-						}
-					}else{
-						this.ad_close=true
-					}
-				}
-			}
-			// #ifdef H5
-			var userinfo=uni.getStorageSync('userinfo')
-			if(!userinfo && !userinfo.userdata){
-				wx_login()
-			}
-			// #endif
 		},
 		methods: {
-			swiper_change(e){
-				this.swiper_bgcolor=this.images[e.detail.current].maincolor
+			swiper_change(e) {
+				this.swiper_bgcolor = this.images[e.detail.current].maincolor
 			},
 			// 获取轮播图和列表信息
 			getIndexInfo() {
-				getIndexInfo().then(res => {
-					this.images = res.data.data.ads
-					this.fls = res.data.data.classify
-					this.index_courseTJ=res.data.data.courses
+				getIndexCourse().then(res => {
+					if (res.statusCode === 200) {
+						if(res.data.status === 200 && res.data.data) {
+							this.index_courseTJ = res.data.data.list
+						}
+					}
+				})
+				getIndexBanner().then(res => {
+					if(res.statusCode === 200) {
+						if(res.data.status === 200 && res.data.data) {
+							this.images = res.data.data
+						}
+					}
 				})
 			},
 
 			// 页面跳转
-			navigate(e,param){
-				if(e=='vip'){
+			navigate(e, param) {
+				if (e == 'vip') {
 					uni.switchTab({
-						url:'/pages/'+e+'/'+e
+						url: '/pages/' + e + '/' + e
 					})
-				}else if(e=='course-list'){
+				} else if (e == 'course-list') {
 					uni.navigateTo({
-						url:'/pages/'+e+'/'+e+'?moretype='+param
+						url: '/pages/' + e + '/' + e + '?moretype=' + param
 					})
-				}
-				else {
+				} else {
 					uni.navigateTo({
-						url:'/pages/'+e+'/'+e
+						url: '/pages/' + e + '/' + e
 					})
 				}
 			},
 			postSearchCourse(e) {
 				var keyword
-				if(e == 'course' || e == 'instrument' || e == 'free' ) {
+				if (e == 'course' || e == 'instrument' || e == 'free') {
 					keyword = e
 				} else {
 					keyword = this.keyword
-					if(keyword == '') {
+					if (keyword == '') {
 						uni.showToast({
 							title: '搜索内容不能为空',
 							icon: 'none'
@@ -161,26 +144,30 @@
 					url: `/pages/shop/shop?keyword=${keyword}`
 				});
 			},
-			
+
 		}
 	}
 </script>
 
 <style lang="less">
-@import url('./home.less');
-@import url('./goods-course.less');
-@keyframes rotation {
-	from {
-		transform: rotate(0deg);
+	@import url('./home.less');
+	@import url('./goods-course.less');
+
+	@keyframes rotation {
+		from {
+			transform: rotate(0deg);
+		}
+
+		to {
+			transform: rotate(720deg);
+		}
 	}
-	to {
-		transform: rotate(720deg);
+
+	.an {
+		animation: rotation 2s infinite linear;
 	}
-}
-.an {
-	animation: rotation 2s infinite linear;
-}
-.pause {
-	animation-play-state: paused;
-}
+
+	.pause {
+		animation-play-state: paused;
+	}
 </style>

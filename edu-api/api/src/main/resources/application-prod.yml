@@ -1,0 +1,13 @@
+server:
+  port: 8088
+
+spring:
+  datasource:                                           # 数据源的相关配置
+    url: jdbc:mysql://rm-bp112prh49m0mj1v54o.mysql.rds.aliyuncs.com:3306/edu-center?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: chenchuxiang
+    password: Chenchu2580
+
+file:
+  upload-address: /usr/share/nginx/images/
+  show:
+    prefix: https://www.bangmom.top/images/
